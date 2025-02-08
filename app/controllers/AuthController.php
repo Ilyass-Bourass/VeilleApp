@@ -1,5 +1,6 @@
 <?php 
 require_once (__DIR__.'/../models/User.php');
+require_once(__DIR__ . '/../models/Presentation.php');
 
 class AuthController extends BaseController {
  
@@ -25,6 +26,19 @@ class AuthController extends BaseController {
       
     $this->render('auth/login');
    }
+
+   public function showClander() {
+    // Récupérer les présentations depuis la base de données
+    $presentationModel = new Presentation();
+    $presentations = $presentationModel->getAllPresentations();
+    
+    // Passer les données à la vue
+    $data = [
+        'presentations' => $presentations
+    ];
+    
+    $this->render('presentations/calendar', $data);
+}
    
 
    public function handleRegister(){

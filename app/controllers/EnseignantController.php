@@ -2,17 +2,19 @@
 require_once (__DIR__.'/../models/User.php');
 require_once (__DIR__.'/../models/sujet.php');
 require_once (__DIR__.'/../models/Enseignant.php');
+require_once (__DIR__.'/../models/Presentation.php');
 
 class EnseignantController extends BaseController {
     private $UserModel ;
     private $SujetModel;
     private $EnseignantModel;
+    private $PresentationModel;
     public function __construct(){
         
         $this->UserModel = new User();
         $this->SujetModel = new Sujet();
         $this->EnseignantModel=new Enseignant();
-        
+        $this->PresentationModel = new Presentation();
      }
 
    public function index() {
@@ -25,10 +27,21 @@ class EnseignantController extends BaseController {
     }
     $users=$this->UserModel->getAllEtudiant();
     $suggestions=$this->SujetModel->getALLSuggestion();
-    $data=['users'=>$users,'suggestions'=>$suggestions];
+    $presentations=$this->PresentationModel->getAllPresentations();
+    $stats = [
+        'active_students' => $this->EnseignantModel->countAllUsers(),
+        'total_presentations' => $this->EnseignantModel->countAllPresentations(),
+        'total_suggestions' => $this->EnseignantModel->countAllSuggestions(),
+        'total_sujets_approuves' => $this->EnseignantModel->countAllSujetsApprouves()
+    ];
+    
 
-    // var_dump($data);
+
+    $data=['users'=>$users,'suggestions'=>$suggestions,'presentations'=>$presentations,'stats'=>$stats];
+
+    // var_dump($presentation);
     // die();
+    
       
       $this->render('dashbordEnseignant/pageEnseignant',$data);
       
@@ -37,6 +50,16 @@ class EnseignantController extends BaseController {
    public function handelapprouverSujet($id_sujet){
         if($_SERVER['REQUEST_METHOD']=='GET'){
             $id_sujetHandle=$this->SujetModel->approuverSujet($id_sujet);
+            header("Location: /enseignant");
+            exit;
+        }
+   }
+
+   public function handelAjouterSujet(){
+        if($_SERVER['REQUEST_METHOD']=='POST'){
+            $id_enseignant=$_SESSION['user_loged_in_id'];
+            $titre=$_POST['titre'];
+            $id_sujetHandle=$this->SujetModel->ajouterSujet($titre,$id_enseignant);
             header("Location: /enseignant");
             exit;
         }
@@ -63,6 +86,17 @@ class EnseignantController extends BaseController {
         $id_userActiver=$this->EnseignantModel->supprimerUser($id_user);
         header("Location: /enseignant");
         exit;
+    }
+   }
+   public function handelAjouterPresentation(){
+    if($_SERVER['REQUEST_METHOD']=='POST'){
+        $id_sujet=$_POST['id_sujet'];
+        $users_id=$_POST['users_id'];
+        $date_presentation=$_POST['date_presentation'];
+        $id_presentation=$this->PresentationModel->ajouterPresentation($id_sujet,$users_id,$date_presentation);
+        header("Location: /enseignant");
+        exit;
+
     }
    }
    

@@ -27,8 +27,13 @@ Route::setRouter($router);
 // auth routes 
 Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'handleRegister']);
+
 Route::get('/login', [AuthController::class, 'showleLogin']);
 Route::post('/login', [AuthController::class, 'handleLogin']);
+
+Route::get('/calendar', [AuthController::class, 'showClander']);
+
+
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/test', [AuthController::class, 'showPageTest']);
 Route::get('/home', [HomeController::class, 'index']);
@@ -38,8 +43,12 @@ Route::get('/home', [HomeController::class, 'index']);
 Route::get('/enseignant', [EnseignantController::class, 'index']);
 Route::get('/enseignant/approuver/{id}', [EnseignantController::class, 'handelapprouverSujet']);
 Route::get('/enseignant/rejeter/{id}', [EnseignantController::class, 'handelrejeterSujet']);
+
 Route::get('/enseignant/activer/{id}', [EnseignantController::class, 'handelactiverUser']);
 Route::get('/enseignant/supprimer/{id}', [EnseignantController::class, 'handelsupprimerUser']);
+
+Route::post('/enseignant/ajouter-sujet', [EnseignantController::class, 'handelAjouterSujet']);
+Route::post('/enseignant/ajouter-presentation', [EnseignantController::class, 'handelAjouterPresentation']);
 // Route::get('/admin/users', [EnseignantController::class, 'handleUsers']);
 // Route::get('/admin/categories', [EnseignantController::class, 'categories']);
 // Route::get('/admin/testimonials', [EnseignantController::class, 'testimonials']);
